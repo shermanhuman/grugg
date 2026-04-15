@@ -1,1 +1,10 @@
-anthropic>=0.40.0
+# Benchmark dependencies — install the SDK for your provider
+#
+# Google Gemini (recommended):
+#   pip install google-genai
+#
+# OpenAI:
+#   pip install openai
+#
+# Anthropic:
+#   pip install anthropic
