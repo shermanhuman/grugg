@@ -35,6 +35,8 @@ def benchmark_pair(orig_path: Path, comp_path: Path):
 
 
 def print_table(rows):
+    metric = "o200k_base tokens (not necessarily the active model tokenizer)" if _enc is not None else "whitespace words (tokenizer unavailable)"
+    print(f"Metric: {metric}; validity covers structure, not semantic equivalence.")
     print("\n| File | Original | Compressed | Saved % | Valid |")
     print("|------|----------|------------|---------|-------|")
     for r in rows:
@@ -63,7 +65,8 @@ def main():
 
     rows = []
     for orig in sorted(tests_dir.glob("*.original.md")):
-        comp = orig.with_name(orig.stem.removesuffix(".original") + ".md")
+        source_name = orig.name.removesuffix(".original.md")
+        comp = orig.with_name(source_name if Path(source_name).suffix else source_name + ".md")
         if comp.exists():
             rows.append(benchmark_pair(orig, comp))
 

@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 
 # Extensions that are natural language and compressible
-COMPRESSIBLE_EXTENSIONS = {".md", ".txt", ".markdown", ".rst"}
+COMPRESSIBLE_EXTENSIONS = {".md", ".txt", ".markdown"}
 
 # Extensions that are code/config and should be skipped
 SKIP_EXTENSIONS = {
@@ -65,6 +65,8 @@ def detect_file_type(filepath: Path) -> str:
     Returns:
         One of: 'natural_language', 'code', 'config', 'unknown'
     """
+    if filepath.name.lower() in {".env", "dockerfile", "makefile", "gemfile", "procfile"}:
+        return "config"
     ext = filepath.suffix.lower()
 
     # Extension-based classification
@@ -76,8 +78,8 @@ def detect_file_type(filepath: Path) -> str:
     # Extensionless files (like CLAUDE.md, TODO) — check content
     if not ext:
         try:
-            text = filepath.read_text(errors="ignore")
-        except (OSError, PermissionError):
+            text = filepath.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
             return "unknown"
 
         lines = text.splitlines()[:50]
