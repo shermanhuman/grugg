@@ -27,7 +27,7 @@ class ValidationResult:
 
 
 def read_file(path: Path) -> str:
-    return path.read_text(errors="ignore")
+    return path.read_bytes().decode("utf-8")
 
 
 # ---------- Extractors ----------
@@ -74,10 +74,8 @@ def extract_code_blocks(text):
                 break
             block_lines.append(lines[i])
             i += 1
-        if closed:
-            blocks.append("\n".join(block_lines))
-        # Unclosed fences are silently skipped — they indicate malformed markdown
-        # and including them would cause false-positive validation failures.
+        # An unclosed fence consumes the rest of the document in CommonMark.
+        blocks.append("\n".join(block_lines))
     return blocks
 
 
@@ -104,7 +102,7 @@ def validate_headings(orig, comp, result):
         result.add_error(f"Heading count mismatch: {len(h1)} vs {len(h2)}")
 
     if h1 != h2:
-        result.add_warning("Heading text/order changed")
+        result.add_error("Heading text/order changed")
 
 
 def validate_code_blocks(orig, comp, result):
@@ -128,7 +126,7 @@ def validate_paths(orig, comp, result):
     p2 = extract_paths(comp)
 
     if p1 != p2:
-        result.add_warning(f"Path mismatch: lost={p1 - p2}, added={p2 - p1}")
+        result.add_error(f"Path mismatch: lost={p1 - p2}, added={p2 - p1}")
 
 
 def validate_bullets(orig, comp, result):
@@ -158,6 +156,20 @@ def validate(original_path: Path, compressed_path: Path) -> ValidationResult:
     validate_urls(orig, comp, result)
     validate_paths(orig, comp, result)
     validate_bullets(orig, comp, result)
+    if not comp.strip() and orig.strip():
+        result.add_error("Nonempty source became empty")
+    protected = {
+        "frontmatter": lambda text: re.match(r"\A---\r?\n.*?\r?\n(?:---|\.\.\.)(?:\r?\n|$)", text, re.DOTALL).group(0) if re.match(r"\A---\r?\n.*?\r?\n(?:---|\.\.\.)(?:\r?\n|$)", text, re.DOTALL) else "",
+        "inline code": lambda text: re.findall(r"(?<!`)(`+)(?!`)(.*?)\1(?!`)", text, re.DOTALL),
+        "indented regions": lambda text: [line for line in text.splitlines() if line.startswith(("    ", "\t"))],
+        "list structure": lambda text: re.findall(r"^([ \t]*[-*+] |[ \t]*\d+[.)] )", text, re.MULTILINE),
+        "table structure": lambda text: [line.count("|") for line in text.splitlines() if line.lstrip().startswith("|")],
+        "link destinations": lambda text: re.findall(r"\]\(([^)]+)\)", text),
+        "numbers": lambda text: re.findall(r"(?<!\w)\d+(?:[.,]\d+)*(?!\w)", text),
+    }
+    for label, extract in protected.items():
+        if extract(orig) != extract(comp):
+            result.add_error(f"Protected {label} changed")
 
     return result
 
@@ -187,3 +199,5 @@ if __name__ == "__main__":
         print("\nWarnings:")
         for w in res.warnings:
             print(f"  - {w}")
+
+    sys.exit(0 if res.is_valid else 1)

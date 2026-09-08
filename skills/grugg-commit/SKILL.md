@@ -4,7 +4,7 @@ description: >
   Ultra-compressed commit message generator. Cuts noise from commit messages while preserving
   intent and reasoning. Conventional Commits format. Subject ≤50 chars, body only when "why"
   isn't obvious. Use when user says "write a commit", "commit message", "generate commit",
-  "/commit", or invokes /grugg-commit. Auto-triggers when staging changes.
+  "/commit", or invokes /grugg-commit. Apply when a commit message is actually being prepared, not merely when files are staged.
 ---
 
 Write commit messages terse and exact. Conventional Commits format. No fluff. Why over what.
@@ -28,8 +28,8 @@ Write commit messages terse and exact. Conventional Commits format. No fluff. Wh
 
 **What NEVER goes in:**
 - "This commit does X", "I", "we", "now", "currently" — the diff says what
-- "As requested by..." — use Co-authored-by trailer
-- "Generated with Claude Code" or any AI attribution
+- Conversational attribution; add co-author trailers only when authorship and project policy support them.
+- Unrequested generated-attribution boilerplate; preserve attribution required by the user or project.
 - Emoji (unless project convention requires)
 - Restating the file name when scope already says it
 
@@ -62,4 +62,4 @@ Always include body for: breaking changes, security fixes, data migrations, anyt
 
 ## Boundaries
 
-Only generates the commit message. Does not run `git commit`, does not stage files, does not amend. Output the message as a code block ready to paste. "stop grugg-commit" or "normal mode": revert to verbose commit style.
+Formatting a message does not itself stage, commit, or amend. If the user only requested a message, return it as a code block. If this is a helper during an authorized commit task, return the formatted message to that workflow so it can finish the commit. "stop grugg-commit" or "normal mode": revert to verbose commit style.

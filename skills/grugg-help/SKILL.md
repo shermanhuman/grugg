@@ -15,7 +15,7 @@ Display this reference card when invoked. One-shot — do NOT change mode, write
 | Mode | Trigger | What change |
 |------|---------|-------------|
 | **Lite** | `/grugg lite` | Drop filler. Keep sentence structure. |
-| **Full** | `/grugg` | Drop articles, filler, pleasantries, hedging. Fragments OK. Default. |
+| **Full** | `/grugg` | Drop articles and filler; preserve uncertainty. Fragments OK. Default. |
 | **Ultra** | `/grugg ultra` | Extreme compression. Bare fragments. Tables over prose. |
 | **Wenyan-Lite** | `/grugg wenyan-lite` | Classical Chinese style, light compression. |
 | **Wenyan-Full** | `/grugg wenyan` | Full 文言文. Maximum classical terseness. |
@@ -29,30 +29,18 @@ Mode stick until changed or session end.
 |-------|---------|-----------:|
 | **grugg-commit** | `/grugg-commit` | Terse commit messages. Conventional Commits. ≤50 char subject. |
 | **grugg-review** | `/grugg-review` | One-line PR comments: `L42: bug: user null. Add guard.` |
-| **grugg-compress** | `/grugg:compress <file>` | Compress .md files to grugg prose. Saves ~46% input tokens. |
+| **grugg-compress** | `/grugg-compress <file>` | Compress .md files to grugg prose. Savings vary; structural validation is not a semantic guarantee. |
 | **grugg-help** | `/grugg-help` | This card. |
 
 ## Deactivate
 
 Say "stop grugg" or "normal mode". Resume anytime with `/grugg`.
 
-## Configure Default Mode
+## Configuration
 
-Default mode = `full`. Change it:
+No runtime hook reads `GRUGG_DEFAULT_MODE` or a Grugg config file in this herd. Choose the session mode in your request. To change a project's startup style, explicitly override `rules/grugg-activate.md` through Promptherder settings and sync. "Normal mode" remains effective for the current session.
 
-**Environment variable** (highest priority):
-```bash
-export GRUGG_DEFAULT_MODE=ultra
-```
-
-**Config file** (`~/.config/grugg/config.json`):
-```json
-{ "defaultMode": "lite" }
-```
-
-Set `"off"` to disable auto-activation on session start. User can still activate manually with `/grugg`.
-
-Resolution: env var > config file > `full`.
+Native invocation uses `/grugg` in Claude and `$grugg` in Codex; apply the same prefix to other skill IDs. `grugg-compress` is the portable skill name, not a `grugg:compress` namespace alias.
 
 ## More
 

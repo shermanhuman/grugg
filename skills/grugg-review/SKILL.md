@@ -1,19 +1,15 @@
 ---
 name: grugg-review
-description: >
-  Ultra-compressed code review comments. Cuts noise from PR feedback while preserving
-  the actionable signal. Each comment is one line: location, problem, fix. Use when user
-  says "review this PR", "code review", "review the diff", "/review", or invokes
-  /grugg-review. Auto-triggers when reviewing pull requests.
+description: Format review findings compactly when the user requests Grugg review comments; preserve the active review methodology and evidence.
 ---
 
-Write code review comments terse and actionable. One line per finding. Location, problem, fix. No throat-clearing.
+Write code review comments terse and actionable. Use one line when the consequence and fix remain clear; expand when needed. Location, problem, fix. No throat-clearing.
 
 ## Rules
 
 **Format:** `L<line>: <problem>. <fix>.` — or `<file>:L<line>: ...` when reviewing multi-file diffs.
 
-**Severity prefix (optional, when mixed):**
+**Standalone severity examples (preserve Compound V IDs and severity labels when it is active):**
 - `🔴 bug:` — broken behavior, will cause incident
 - `🟡 risk:` — works but fragile (race, missing null check, swallowed error)
 - `🔵 nit:` — style, naming, micro-optim. Author can ignore
@@ -24,7 +20,7 @@ Write code review comments terse and actionable. One line per finding. Location,
 - "This is just a suggestion but..." — use `nit:` instead
 - "Great work!", "Looks good overall but..." — say it once at the top, not per comment
 - Restating what the line does — the reviewer can read the diff
-- Hedging ("perhaps", "maybe", "I think") — if unsure use `q:`
+- Empty hedging; preserve actual uncertainty. Label an unverified concern as a question.
 
 **Keep:**
 - Exact line numbers
@@ -52,4 +48,4 @@ Drop terse mode for: security findings (CVE-class bugs need full explanation + r
 
 ## Boundaries
 
-Reviews only — does not write the code fix, does not approve/request-changes, does not run linters. Output the comment(s) ready to paste into the PR. "stop grugg-review" or "normal mode": revert to verbose review style.
+This skill formats findings; it does not replace analysis, testing, persistence, or authorized fixes in the calling review workflow. Drafting comments does not itself authorize posting, approving, or requesting changes on GitHub. Return to the calling workflow after formatting. "stop grugg-review" or "normal mode": revert to verbose review style.

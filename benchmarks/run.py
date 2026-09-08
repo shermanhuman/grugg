@@ -2,7 +2,7 @@
 """Benchmark grugg vs normal LLM output token counts.
 
 Supports multiple providers: Gemini (Google), OpenAI, and Anthropic.
-Auto-detects provider from available API keys, or use --provider flag.
+Requires explicit --provider and --model; output-token counts do not prove quality.
 """
 
 import argparse
@@ -79,7 +79,7 @@ class GeminiProvider:
                     "input_tokens": usage.prompt_token_count or 0,
                     "output_tokens": usage.candidates_token_count or 0,
                     "text": response.text or "",
-                    "stop_reason": "stop",
+                    "stop_reason": str(response.candidates[0].finish_reason) if response.candidates else "unknown",
                 }
             except Exception as e:
                 if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
@@ -321,7 +321,7 @@ def format_table(rows, summary):
 
 
 def save_results(results, rows, summary, provider_name, model, trials, skill_hash):
-    ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S_%f")
     output = {
         "metadata": {
             "script_version": SCRIPT_VERSION,
@@ -337,7 +337,7 @@ def save_results(results, rows, summary, provider_name, model, trials, skill_has
     }
     path = RESULTS_DIR / f"benchmark_{ts}.json"
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    with open(path, "w") as f:
+    with open(path, "x") as f:
         json.dump(output, f, indent=2)
     return path
 
@@ -368,27 +368,28 @@ def main():
   openai     OpenAI (OPENAI_API_KEY)
   anthropic  Anthropic Claude (ANTHROPIC_API_KEY)
 
-Auto-detects provider from available API keys if --provider is not set.
-Priority: GOOGLE_API_KEY > OPENAI_API_KEY > ANTHROPIC_API_KEY.""",
+Select --provider and --model explicitly. Credentials alone do not select a provider.""",
     )
     parser.add_argument(
-        "--provider", choices=["gemini", "openai", "anthropic"],
-        help="LLM provider (auto-detected from API keys if not set)",
+        "--provider", choices=["gemini", "openai", "anthropic"], required=True,
+        help="Explicit LLM provider",
     )
     parser.add_argument("--trials", type=int, default=3, help="Trials per prompt per mode (default: 3)")
     parser.add_argument("--dry-run", action="store_true", help="Print config, no API calls")
-    parser.add_argument("--model", help="Model to use (default: provider-specific)")
+    parser.add_argument("--model", required=True, help="Explicit model ID for this benchmark")
     args = parser.parse_args()
 
+    if args.trials < 1:
+        parser.error("--trials must be positive")
     # Resolve provider
-    provider_name = args.provider or detect_provider()
+    provider_name = args.provider
     if not provider_name:
         print("ERROR: No provider detected. Set one of:", file=sys.stderr)
         print("  GOOGLE_API_KEY, OPENAI_API_KEY, or ANTHROPIC_API_KEY", file=sys.stderr)
         print("  Or use --provider flag.", file=sys.stderr)
         sys.exit(1)
 
-    model = args.model or DEFAULT_MODELS[provider_name]
+    model = args.model
     prompts = load_prompts()
 
     if args.dry_run:

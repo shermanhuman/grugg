@@ -10,3 +10,7 @@
 # Benchmark
 benchmarks/results/*.json
 .env.local
+
+# Python validation/runtime caches
+__pycache__/
+*.py[cod]

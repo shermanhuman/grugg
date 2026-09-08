@@ -1,72 +1,27 @@
 #!/usr/bin/env python3
-"""
-Grugg Compress CLI
-
-Usage:
-    grugg <filepath>
-"""
-
-import sys
+"""Explicit, staged prose compression. No network calls without --provider."""
+import argparse
 from pathlib import Path
-
-from .compress import compress_file
-from .detect import detect_file_type, should_compress
-
-
-def print_usage():
-    print("Usage: grugg <filepath>")
+from .compress import compress_file, backup_for
 
 
 def main():
-    if len(sys.argv) != 2:
-        print_usage()
-        sys.exit(1)
-
-    filepath = Path(sys.argv[1])
-
-    # Check file exists
-    if not filepath.exists():
-        print(f"❌ File not found: {filepath}")
-        sys.exit(1)
-
-    if not filepath.is_file():
-        print(f"❌ Not a file: {filepath}")
-        sys.exit(1)
-
-    filepath = filepath.resolve()
-
-    # Detect file type
-    file_type = detect_file_type(filepath)
-
-    print(f"Detected: {file_type}")
-
-    # Check if compressible
-    if not should_compress(filepath):
-        print("Skipping: file is not natural language (code/config)")
-        sys.exit(0)
-
-    print("Starting grugg compression...\n")
-
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("filepath", type=Path)
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--candidate", type=Path, help="Agent-reviewed UTF-8 candidate; no provider call")
+    source.add_argument("--provider", choices=["claude"], help="Explicitly send the source to Claude")
+    args = parser.parse_args()
     try:
-        success = compress_file(filepath)
-
-        if success:
-            print("\nCompression completed successfully")
-            backup_path = filepath.with_name(filepath.stem + ".original.md")
-            print(f"Compressed: {filepath}")
-            print(f"Original:   {backup_path}")
-            sys.exit(0)
-        else:
-            print("\n❌ Compression failed after retries")
-            sys.exit(2)
-
+        success = compress_file(args.filepath, candidate=args.candidate, provider=args.provider)
+        if not success:
+            parser.exit(2, "Compression rejected; source unchanged.\n")
+        print(f"Compressed: {args.filepath}\nBackup: {backup_for(args.filepath)}")
+        print("Structural checks passed; semantic preservation requires reviewing the diff.")
     except KeyboardInterrupt:
-        print("\nInterrupted by user")
-        sys.exit(130)
-
-    except Exception as e:
-        print(f"\n❌ Error: {e}")
-        sys.exit(1)
+        parser.exit(130, "Interrupted.\n")
+    except Exception as exc:
+        parser.exit(1, f"Compression failed: {exc}\n")
 
 
 if __name__ == "__main__":
