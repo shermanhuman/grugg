@@ -104,7 +104,7 @@ MIT License — Copyright (c) 2025 Julius Brussee
 
 Use native `/grugg` in Claude Code or `$grugg` in Codex (and the same prefix for other skill IDs). Older colon-style aliases are not installed by Promptherder 1.x. Explicit session style changes override the startup baseline; normal mode stays normal until changed again. There is no runtime reader for `GRUGG_DEFAULT_MODE` or a Grugg config file.
 
-Grugg changes commentary, not required review evidence or artifact schemas. Persisted plans, reviews, commits, and PRs use normal prose unless explicitly requested otherwise. Grugg review/commit skills are formatting helpers and do not prevent their caller from completing already-authorized work.
+Grugg changes commentary, not required review evidence or artifact schemas. Plans and reviews retain Compound V’s required structure and may use terse prose. Code, commits, and PRs remain normal unless a dedicated formatter is requested. Grugg review/commit skills are formatting helpers and do not prevent their caller from completing already-authorized work.
 
 Compression defaults to a candidate written and reviewed by the current agent. The CLI now requires `--candidate <path>` or explicit `--provider claude`; it never chooses a paid provider from credentials alone. Backups include the source's full filename, for example `notes.md.original.md`. Existing backups are preserved. Structural validation does not prove semantic equivalence.
 

@@ -16,7 +16,7 @@ Display this reference card when invoked. One-shot — do NOT change mode, write
 |------|---------|-------------|
 | **Lite** | `/grugg lite` | Drop filler. Keep sentence structure. |
 | **Full** | `/grugg` | Drop articles and filler; preserve uncertainty. Fragments OK. Default. |
-| **Ultra** | `/grugg ultra` | Extreme compression. Bare fragments. Tables over prose. |
+| **Ultra** | `/grugg ultra` | Extreme compression. Bare fragments. Prefer tables while preserving required artifact formats. |
 | **Wenyan-Lite** | `/grugg wenyan-lite` | Classical Chinese style, light compression. |
 | **Wenyan-Full** | `/grugg wenyan` | Full 文言文. Maximum classical terseness. |
 | **Wenyan-Ultra** | `/grugg wenyan-ultra` | Extreme. Ancient scholar on a budget. |
