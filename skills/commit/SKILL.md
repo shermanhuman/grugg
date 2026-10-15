@@ -1,10 +1,11 @@
 ---
-name: grugg-commit
+name: commit
 description: >
   Ultra-compressed commit message generator. Cuts noise from commit messages while preserving
   intent and reasoning. Conventional Commits format. Subject ≤50 chars, body only when "why"
   isn't obvious. Use when user says "write a commit", "commit message", "generate commit",
-  "/commit", or invokes /grugg-commit. Apply when a commit message is actually being prepared, not merely when files are staged.
+  or invokes the grugg commit skill. Apply when a commit message is actually being prepared, not merely when files are staged.
+disable-model-invocation: true
 ---
 
 Write commit messages terse and exact. Conventional Commits format. No fluff. Why over what.

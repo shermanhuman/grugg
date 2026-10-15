@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-SKILL = Path(__file__).resolve().parents[1] / "skills/grugg-compress"
+SKILL = Path(__file__).resolve().parents[1] / "skills/compress"
 sys.path.insert(0, str(SKILL))
 from scripts.compress import compress_file, backup_for
 from scripts.validate import validate
