@@ -1,6 +1,7 @@
 ---
-name: grugg-review
+name: review
 description: Format review findings compactly when the user requests Grugg review comments; preserve the active review methodology and evidence.
+disable-model-invocation: true
 ---
 
 Write code review comments terse and actionable. Use one line when the consequence and fix remain clear; expand when needed. Location, problem, fix. No throat-clearing.
@@ -48,4 +49,4 @@ Drop terse mode for: security findings (CVE-class bugs need full explanation + r
 
 ## Boundaries
 
-This skill formats findings; it does not replace analysis, testing, persistence, or authorized fixes in the calling review workflow. Drafting comments does not itself authorize posting, approving, or requesting changes on GitHub. Return to the calling workflow after formatting. "stop grugg-review" or "normal mode": revert to verbose review style.
+This skill formats findings; it does not replace analysis, testing, persistence, or authorized fixes in the calling review workflow. Drafting comments does not itself authorize posting, approving, or requesting changes on GitHub. Return to the calling workflow after formatting. "stop grugg" or "normal mode": revert to verbose review style.

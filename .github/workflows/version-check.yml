@@ -19,43 +19,33 @@ jobs:
         run: |
           set -euo pipefail
 
+          MANIFEST=.claude-plugin/plugin.json
           BASE_REF="${{ github.event.pull_request.base.ref }}"
           git fetch origin "$BASE_REF"
 
-          PR_VERSION=$(grep -oP '"version":\s*"\K[^"]+' herd.json || true)
-          MAIN_VERSION=$(git show "origin/$BASE_REF:herd.json" 2>/dev/null | grep -oP '"version":\s*"\K[^"]+' || true)
+          PR_VERSION=$(jq -r '.version // empty' "$MANIFEST")
+          MAIN_VERSION=$(git show "origin/$BASE_REF:$MANIFEST" 2>/dev/null | jq -r '.version // empty' || true)
 
           if [ -z "$PR_VERSION" ]; then
-            echo "::error::Could not extract version from herd.json."
+            echo "::error::Could not read version from $MANIFEST."
             exit 1
           fi
 
           echo "PR version:   $PR_VERSION"
-          echo "Base version: $MAIN_VERSION"
+          echo "Base version: ${MAIN_VERSION:-none}"
 
           if [ -z "$MAIN_VERSION" ]; then
-            echo "✓ No version on base branch — first version: $PR_VERSION"
+            echo "✓ No plugin manifest on base branch — first version: $PR_VERSION"
             exit 0
           fi
 
-          if [ "$PR_VERSION" = "$MAIN_VERSION" ]; then
-            echo ""
-            echo "::error::Version has not been bumped. Update the version in herd.json before merging."
-            echo "Current version on $BASE_REF: $MAIN_VERSION"
-            echo "Bump minor for features, patch for fixes."
-            exit 1
-          fi
-
-          # Enforce version is greater, not just different (no downgrades).
           IFS='.' read -r PR_MAJOR PR_MINOR PR_PATCH <<< "$PR_VERSION"
           IFS='.' read -r MAIN_MAJOR MAIN_MINOR MAIN_PATCH <<< "$MAIN_VERSION"
 
           if (( PR_MAJOR < MAIN_MAJOR )) || \
              (( PR_MAJOR == MAIN_MAJOR && PR_MINOR < MAIN_MINOR )) || \
              (( PR_MAJOR == MAIN_MAJOR && PR_MINOR == MAIN_MINOR && PR_PATCH <= MAIN_PATCH )); then
-            echo ""
-            echo "::error::Version must be greater than base. Got $PR_VERSION, base has $MAIN_VERSION."
-            echo "Bump minor for features, patch for fixes."
+            echo "::error::Version must be greater than base. Got $PR_VERSION, base has $MAIN_VERSION. Installed copies only update when the version changes."
             exit 1
           fi
 

@@ -1,0 +1,10 @@
+{
+  "name": "grugg",
+  "version": "3.0.0",
+  "description": "Terse communication mode for Claude Code and Codex, opt-in: lite, full, ultra and classical Chinese levels, plus terse commit, review-comment and file-compression helpers.",
+  "author": { "name": "Sherman Boyd", "url": "https://github.com/shermanhuman" },
+  "homepage": "https://github.com/shermanhuman/grugg",
+  "repository": "https://github.com/shermanhuman/grugg",
+  "license": "MIT",
+  "keywords": ["terse", "tokens", "communication", "commit-messages"]
+}

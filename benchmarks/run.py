@@ -24,7 +24,7 @@ if _env_file.exists():
             key, _, value = line.partition("=")
             os.environ.setdefault(key.strip(), value.strip())
 
-SCRIPT_VERSION = "2.0.0"
+SCRIPT_VERSION = "2.1.0"
 SCRIPT_DIR = Path(__file__).parent
 REPO_DIR = SCRIPT_DIR.parent
 PROMPTS_PATH = SCRIPT_DIR / "prompts.json"
@@ -207,7 +207,12 @@ def load_prompts():
 
 
 def load_grugg_system():
-    return SKILL_PATH.read_text()
+    # The skill is opt-in ("off until invoked"); in a host it only loads when the
+    # user invokes it, so the benchmark states that invocation explicitly.
+    text = SKILL_PATH.read_text()
+    if text.startswith("---"):
+        text = text.split("---", 2)[2].lstrip()
+    return "The user invoked /grugg:grugg (full).\n\n" + text
 
 
 def sha256_file(path):
