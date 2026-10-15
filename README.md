@@ -57,7 +57,14 @@ Run `python3 -m unittest discover -s tests` for offline regressions. Benchmarks 
 
 ## Upgrading from 2.x
 
-2.x was a [Promptherder](https://github.com/shermanhuman/promptherder) herd with an always-on activation rule and skills named `grugg-commit`, `grugg-review`, `grugg-help` and `grugg-compress`. 3.0 has no always-on rule, and the plugin namespace replaces the prefix: `/grugg:commit` and so on. Remove the herd (`.promptherder/herds/grugg`) and install the plugin instead.
+2.x was a [Promptherder](https://github.com/shermanhuman/promptherder) herd with an always-on activation rule and skills named `grugg-commit`, `grugg-review`, `grugg-help` and `grugg-compress`. 3.0 has no always-on rule, and the plugin namespace replaces the prefix: `/grugg:commit` and so on.
+
+Deleting the herd alone leaves what Promptherder generated from it, including the activation text in `AGENTS.md`, so grugg would keep switching on. In each repository that pulled it:
+
+1. Remove the herd: `rm -rf .promptherder/herds/grugg`.
+2. Re-sync so Promptherder deletes the output it generated from the herd (its manifest tracks every file): `promptherder --update-lock`. If you've stopped using Promptherder, delete the generated `AGENTS.md`/`CLAUDE.md` sections and the `grugg*` folders under `.claude/skills/` and `.agents/skills/` by hand, keeping any hand-written instructions.
+3. Check nothing is left: `grep -rl "smart grugg" AGENTS.md CLAUDE.md .claude .agents 2>/dev/null` prints nothing.
+4. Install the plugin as above and start a fresh session.
 
 ## Credits
 

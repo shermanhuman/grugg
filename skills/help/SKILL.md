@@ -17,13 +17,13 @@ Claude Code invokes skills as `/grugg:<skill>`, Codex as `$grugg:<skill>`. The e
 | Mode | Trigger | What change |
 |------|---------|-------------|
 | **Lite** | `/grugg:grugg lite` | Drop filler. Keep sentence structure. |
-| **Full** | `/grugg:grugg` | Drop articles and filler; preserve uncertainty. Fragments OK. Default. |
+| **Full** | `/grugg:grugg full` | Drop articles and filler; preserve uncertainty. Fragments OK. Default. |
 | **Ultra** | `/grugg:grugg ultra` | Extreme compression. Bare fragments. Prefer tables while preserving required artifact formats. |
 | **Wenyan-Lite** | `/grugg:grugg wenyan-lite` | Classical Chinese style, light compression. |
 | **Wenyan-Full** | `/grugg:grugg wenyan` | Full 文言文. Maximum classical terseness. |
 | **Wenyan-Ultra** | `/grugg:grugg wenyan-ultra` | Extreme. Ancient scholar on a budget. |
 
-Grugg is off until invoked. Mode stick until changed or session end.
+Grugg is off until invoked. Bare `/grugg:grugg` turns it on at full, or keeps the level already active. Mode stick until changed or session end.
 
 ## Skills
 
