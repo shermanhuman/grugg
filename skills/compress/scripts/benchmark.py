@@ -57,24 +57,8 @@ def main():
         print_table([benchmark_pair(orig, comp)])
         return
 
-    # Glob mode: repo_root/tests/grugg-compress/
-    tests_dir = Path(__file__).parent.parent.parent / "tests" / "grugg-compress"
-    if not tests_dir.exists():
-        print(f"❌ Tests dir not found: {tests_dir}")
-        sys.exit(1)
-
-    rows = []
-    for orig in sorted(tests_dir.glob("*.original.md")):
-        source_name = orig.name.removesuffix(".original.md")
-        comp = orig.with_name(source_name if Path(source_name).suffix else source_name + ".md")
-        if comp.exists():
-            rows.append(benchmark_pair(orig, comp))
-
-    if not rows:
-        print("No compressed file pairs found.")
-        return
-
-    print_table(rows)
+    print("Usage: python3 benchmark.py <original.md> <compressed.md>")
+    sys.exit(2)
 
 
 if __name__ == "__main__":

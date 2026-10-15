@@ -3,8 +3,7 @@ name: commit
 description: >
   Ultra-compressed commit message generator. Cuts noise from commit messages while preserving
   intent and reasoning. Conventional Commits format. Subject ≤50 chars, body only when "why"
-  isn't obvious. Use when user says "write a commit", "commit message", "generate commit",
-  or invokes the grugg commit skill. Apply when a commit message is actually being prepared, not merely when files are staged.
+  isn't obvious.
 disable-model-invocation: true
 ---
 
@@ -63,4 +62,4 @@ Always include body for: breaking changes, security fixes, data migrations, anyt
 
 ## Boundaries
 
-Formatting a message does not itself stage, commit, or amend. If the user only requested a message, return it as a code block. If this is a helper during an authorized commit task, return the formatted message to that workflow so it can finish the commit. "stop grugg-commit" or "normal mode": revert to verbose commit style.
+Formatting a message does not itself stage, commit, or amend. If the user only requested a message, return it as a code block. If this is a helper during an authorized commit task, return the formatted message to that workflow so it can finish the commit. "stop grugg" or "normal mode": revert to verbose commit style.

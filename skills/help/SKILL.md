@@ -2,8 +2,7 @@
 name: help
 description: >
   Quick-reference card for all grugg modes, skills, and commands.
-  One-shot display, not a persistent mode. Trigger: the grugg help skill,
-  "grugg help", "what grugg commands", "how do I use grugg".
+  One-shot display, not a persistent mode.
 disable-model-invocation: true
 ---
 

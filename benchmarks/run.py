@@ -207,7 +207,12 @@ def load_prompts():
 
 
 def load_grugg_system():
-    return SKILL_PATH.read_text()
+    # The skill is opt-in ("off until invoked"); in a host it only loads when the
+    # user invokes it, so the benchmark states that invocation explicitly.
+    text = SKILL_PATH.read_text()
+    if text.startswith("---"):
+        text = text.split("---", 2)[2].lstrip()
+    return "The user invoked /grugg:grugg (full).\n\n" + text
 
 
 def sha256_file(path):

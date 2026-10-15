@@ -49,4 +49,4 @@ Drop terse mode for: security findings (CVE-class bugs need full explanation + r
 
 ## Boundaries
 
-This skill formats findings; it does not replace analysis, testing, persistence, or authorized fixes in the calling review workflow. Drafting comments does not itself authorize posting, approving, or requesting changes on GitHub. Return to the calling workflow after formatting. "stop grugg-review" or "normal mode": revert to verbose review style.
+This skill formats findings; it does not replace analysis, testing, persistence, or authorized fixes in the calling review workflow. Drafting comments does not itself authorize posting, approving, or requesting changes on GitHub. Return to the calling workflow after formatting. "stop grugg" or "normal mode": revert to verbose review style.
